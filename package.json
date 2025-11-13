@@ -1,0 +1,38 @@
+{
+  "name": "saucedemo-automation",
+  "version": "1.0.0",
+  "description": "Professional Playwright automation framework for Sauce Demo with Page Object Model architecture",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:main": "playwright test tests/e2e/main-scenario.spec.js",
+    "test:cart": "playwright test tests/e2e/cart.spec.js",
+    "test:login": "playwright test tests/e2e/login.spec.js",
+    "test:report": "playwright show-report",
+    "test:codegen": "playwright codegen https://www.saucedemo.com",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix"
+  },
+  "keywords": [
+    "playwright",
+    "automation",
+    "testing",
+    "e2e",
+    "page-object-model",
+    "sqa",
+    "test-automation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "dotenv": "^17.2.3"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
