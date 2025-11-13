@@ -1,6 +1,10 @@
 # Sauce Demo Automation Framework
 
+[![Playwright Tests](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/playwright.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/playwright.yml)
+
 Playwright-based test automation framework using Page Object Model (POM) architecture for Sauce Demo e-commerce testing.
+
+> **Note:** Replace `YOUR_USERNAME` and `YOUR_REPO` in the badge URL with your actual GitHub username and repository name.
 
 ## Table of Contents
 
@@ -184,37 +188,70 @@ await menuPage.logout();
 
 ## CI/CD Integration
 
-### GitHub Actions Example
+This project includes comprehensive GitHub Actions workflows for continuous integration and deployment.
 
-```yaml
-name: Playwright Tests
+### Available Workflows
 
-on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
+#### 1. **Main Playwright Tests** (`.github/workflows/playwright.yml`)
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: npm test
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-```
+- **Triggers:** Push to `main`, `develop`, `master` branches and pull requests
+- **Features:**
+  - Runs tests on multiple Node.js versions (18.x, 20.x)
+  - Parallel test execution
+  - Automatic test result reporting
+  - Artifact uploads (reports, screenshots, videos)
+  - JUnit XML reports for test result visualization
+  - Code linting
+
+#### 2. **PR Tests** (`.github/workflows/pr-tests.yml`)
+
+- **Triggers:** Pull requests to `main`, `develop`, `master` branches
+- **Features:**
+  - Fast test execution optimized for PRs
+  - Automatic PR comments with test results
+  - Test artifact uploads
+
+#### 3. **Nightly Tests** (`.github/workflows/nightly-tests.yml`)
+
+- **Triggers:** Scheduled daily at 2 AM UTC, manual dispatch
+- **Features:**
+  - Comprehensive nightly test runs
+  - Automatic issue creation on failure
+  - Long-term test result tracking
+
+### Workflow Features
+
+✅ **Multi-Node.js Version Testing** - Ensures compatibility across Node.js versions
+✅ **Automatic Artifact Upload** - Test reports, screenshots, and videos are preserved
+✅ **Test Result Reporting** - JUnit XML reports integrated with GitHub Actions
+✅ **PR Comments** - Automatic test result summaries in pull requests
+✅ **Failure Notifications** - Issues created automatically on nightly test failures
+✅ **Parallel Execution** - Optimized worker configuration for CI environments
+✅ **Retry Logic** - Automatic retries on flaky tests (configurable)
+
+### CI Environment Variables
+
+The workflows use the following environment variables (with defaults):
+
+- `CI=true` - Enables CI-specific configurations
+- `RETRIES_CI=2` - Number of retries for failed tests in CI
+- `WORKERS_CI=1` - Number of parallel workers in CI
+- `BASE_URL` - Can be set via GitHub Secrets if needed
+
+### Viewing Test Results
+
+1. **GitHub Actions Tab** - Navigate to the "Actions" tab in your repository
+2. **Workflow Runs** - Click on any workflow run to see detailed logs
+3. **Artifacts** - Download test reports and screenshots from the workflow run
+4. **PR Comments** - Check pull request comments for test result summaries
+
+### Setting Up Secrets (Optional)
+
+If you need to override the default `BASE_URL`, add it as a GitHub Secret:
+
+1. Go to Repository Settings → Secrets and variables → Actions
+2. Add a new secret named `BASE_URL`
+3. Set the value to your target URL
 
 ## Troubleshooting
 
