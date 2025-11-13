@@ -41,7 +41,6 @@ jobs:
         run: npm test
         env:
           CI: true
-          BASE_URL: ${{ secrets.BASE_URL }}
           RETRIES_CI: 1
           WORKERS_CI: 2
 
