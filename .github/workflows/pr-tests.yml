@@ -2,7 +2,12 @@ name: PR Tests
 
 on:
   pull_request:
-    branches: [ main, develop, master ]
+    branches: [main, develop, master]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
 
 jobs:
   pr-tests:
@@ -17,8 +22,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-          cache: 'npm'
+          node-version: "20.x"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -55,25 +60,32 @@ jobs:
             let comment = '## 🧪 Test Results\n\n';
 
             try {
-              const results = JSON.parse(fs.readFileSync('test-results/results.json', 'utf8'));
-              const stats = results.stats;
-
-              comment += `- ✅ **Passed:** ${stats.expected}\n`;
-              comment += `- ❌ **Failed:** ${stats.unexpected}\n`;
-              comment += `- ⏭️ **Skipped:** ${stats.skipped}\n`;
-              comment += `- ⏱️ **Duration:** ${(stats.duration / 1000).toFixed(2)}s\n\n`;
-
-              if (stats.unexpected > 0) {
-                comment += '⚠️ **Some tests failed. Please check the workflow logs for details.**\n';
+              const resultsPath = 'test-results/results.json';
+              if (!fs.existsSync(resultsPath)) {
+                comment += '⚠️ Test results file not found. Check workflow logs for details.\n';
               } else {
-                comment += '✅ **All tests passed!**\n';
+                const results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
+                const stats = results.stats;
+
+                comment += `- ✅ **Passed:** ${stats.expected}\n`;
+                comment += `- ❌ **Failed:** ${stats.unexpected}\n`;
+                comment += `- ⏭️ **Skipped:** ${stats.skipped}\n`;
+                comment += `- ⏱️ **Duration:** ${(stats.duration / 1000).toFixed(2)}s\n\n`;
+
+                if (stats.unexpected > 0) {
+                  comment += '⚠️ **Some tests failed. Please check the workflow logs for details.**\n';
+                } else {
+                  comment += '✅ **All tests passed!**\n';
+                }
               }
             } catch (error) {
-              comment += '⚠️ Could not parse test results.\n';
+              comment += `⚠️ Could not parse test results: ${error.message}\n`;
             }
 
+            const prNumber = context.payload.pull_request?.number || context.issue.number;
+
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
+              issue_number: prNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: comment
